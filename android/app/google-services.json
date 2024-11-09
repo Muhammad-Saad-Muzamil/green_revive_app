@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "979671915039",
+    "project_id": "greenreviveapp-40cd2",
+    "storage_bucket": "greenreviveapp-40cd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979671915039:android:714d5f936aef333b39532a",
+        "android_client_info": {
+          "package_name": "com.example.greenreviveapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSfCQWP3r_xes2iS2cJ1coXd6FqraanOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
