@@ -30,6 +30,8 @@ class MyApp extends StatelessWidget {
   }
 }
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Use FirebaseAuth to check if user is signed in
