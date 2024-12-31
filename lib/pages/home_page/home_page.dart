@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:greenreviveapp/pages/user_pages/account_page.dart';
+import 'package:greenreviveapp/pages/user_pages/eco_shop.dart';
+import 'package:greenreviveapp/pages/user_pages/pick_up_screen.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -15,8 +18,10 @@ class _HomePageState extends State<HomePage> {
   static const List<Widget> _widgetOptions = <Widget>[
     Dashboard(),
     EcoShopScreen(),
-    ScheduleScreen(),
-    UserScreen(),
+    PickUpScreen(),
+    AccountScreen(),
+
+    
   ];
 
   void _onTabSelected(int index) {
@@ -80,31 +85,31 @@ class Dashboard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Your Contribution to a Greener Environment',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Expanded(
             child: PieChart(
               PieChartData(
                 sections: showingSections(),
-                borderData: FlBorderData(show: false),
-                centerSpaceRadius: 40,
+                borderData: FlBorderData(show: true),
+                centerSpaceRadius: 49,
               ),
             ),
           ),
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Weekly Contribution in kWh',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
             child: LineChart(
               LineChartData(
-                gridData: FlGridData(show: false),
-                titlesData: FlTitlesData(
+                gridData: const FlGridData(show: false),
+                titlesData: const FlTitlesData(
                   leftTitles: AxisTitles(),
                   bottomTitles: AxisTitles()
                 ),
@@ -116,17 +121,17 @@ class Dashboard extends StatelessWidget {
                 lineBarsData: [
                   LineChartBarData(
                     spots: [
-                      FlSpot(0, 2),
-                      FlSpot(1, 3),
-                      FlSpot(2, 5),
-                      FlSpot(3, 6),
-                      FlSpot(4, 8),
-                      FlSpot(5, 9),
-                      FlSpot(6, 10),
+                      const FlSpot(0, 2),
+                      const FlSpot(1, 3),
+                      const FlSpot(2, 5),
+                      const FlSpot(3, 6),
+                      const FlSpot(4, 8),
+                      const FlSpot(5, 9),
+                      const FlSpot(6, 10),
                     ],
                     isCurved: true,
                    
-                    dotData: FlDotData(show: false),
+                    dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(show: false),
                   ),
                 ],
@@ -136,49 +141,64 @@ class Dashboard extends StatelessWidget {
         ],
       ),
     );
-  }
+  }}
 
-  List<PieChartSectionData> showingSections() {
-    return List.generate(4, (i) {
-      final isTouched = i == 0; // Change based on touch
-      final fontSize = isTouched ? 25.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
-      switch (i) {
-        case 0:
-          return PieChartSectionData(
-            color: Colors.green,
-            value: 40,
-            title: 'Recycling',
-            radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
-          );
-        case 1:
-          return PieChartSectionData(
-            color: Colors.blue,
-            value: 30,
-            title: 'Energy Saving',
-            radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
-          );
-        case 2:
-          return PieChartSectionData(
-            color: Colors.orange,
-            value: 20,
-            title: 'Planting Trees',
-            radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
-          );
-        case 3:
-          return PieChartSectionData(
-            color: Colors.red,
-            value: 10,
-            title: 'Other',
-            radius: radius,
-            titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
-          );
-        default:
-          throw Error();
-      }
-    });
-  }
-}
+ List<PieChartSectionData> showingSections() {
+  return List.generate(4, (i) {
+    final isTouched = i == 0;
+    final fontSize = isTouched ? 25.0 : 16.0;
+    final radius = isTouched ? 60.0 : 50.0;
+    switch (i) {
+      case 0:
+        return PieChartSectionData(
+          color: Colors.blue,
+          value: 40,
+          title: '40%',
+          radius: radius,
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        );
+      case 1:
+        return PieChartSectionData(
+          color: Colors.yellow,
+          value: 30,
+          title: '30%',
+          radius: radius,
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        );
+      case 2:
+        return PieChartSectionData(
+          color: Colors.purple,
+          value: 15,
+          title: '15%',
+          radius: radius,
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        );
+      case 3:
+        return PieChartSectionData(
+          color: Colors.green,
+          value: 15,
+          title: '15%',
+          radius: radius,
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        );
+      default:
+        throw Error();
+    }
+  });
+ }

@@ -12,6 +12,7 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
 );
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -22,10 +23,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home:AuthWrapper(),
+      home:const AuthWrapper(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -38,7 +40,7 @@ class AuthWrapper extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       // If no user is signed in, show the Login screen
-      return LoginScreen();
+      return const LoginScreen();
     } else {
       // If a user is signed in, show the Home screen
       return const HomePage();}}}
