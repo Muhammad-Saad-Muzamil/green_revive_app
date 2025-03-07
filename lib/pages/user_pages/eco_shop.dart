@@ -20,6 +20,12 @@ class _EcoShopScreenState extends State<EcoShopScreen> {
     setState(() {
       cart.add(plant);
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${plant['name']} added to cart!'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 
   void removePlant(int index) {
@@ -29,11 +35,8 @@ class _EcoShopScreenState extends State<EcoShopScreen> {
   }
 
   void checkout() {
-    // Handle checkout functionality (integrate payment later)
-    // Example placeholder for error handling
     try {
       // Simulate checkout process
-      // Throwing an error for demonstration
       throw Exception('Checkout process failed.'); // Remove this line in actual implementation
     } catch (e) {
       showErrorDialog('Checkout Error', e.toString());
@@ -57,7 +60,6 @@ class _EcoShopScreenState extends State<EcoShopScreen> {
   }
 
   void showCart() {
-    // Show cart items
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -65,6 +67,7 @@ class _EcoShopScreenState extends State<EcoShopScreen> {
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
+            shrinkWrap: true,
             itemCount: cart.length,
             itemBuilder: (context, index) {
               final item = cart[index];
@@ -89,145 +92,183 @@ class _EcoShopScreenState extends State<EcoShopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Roots of Change"),
+        title: const Text("Green Market", style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: showCart,
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                onPressed: showCart,
+              ),
+              if (cart.isNotEmpty)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '${cart.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
       body: plants.isEmpty
           ? const Center(
               child: Text(
-                "No more plants available",
-                style: TextStyle(fontSize: 18),
+                "No plants available",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             )
-          : Stack(
-              alignment: Alignment.center,
-              children: plants.asMap().entries.map((entry) {
-                int index = entry.key;
-                Map<String, dynamic> plant = entry.value;
-
-                return Positioned(
-                  top: index == 0 ? 50 : 70 - index * 5,
-                  left: index == 0 ? 20 : 30 + index * 10,
-                  child: DraggablePlantCard(
-                    plant: plant,
-                    onDismissed: () {
-                      removePlant(index);
-                    },
-                    onAddToCart: addToCart,
-                  ),
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: plants.length,
+              itemBuilder: (context, index) {
+                final plant = plants[index];
+                return PlantCard(
+                  plant: plant,
+                  onAddToCart: () => addToCart(plant),
+                  onRemove: () => removePlant(index),
                 );
-              }).toList(),
+              },
             ),
       bottomNavigationBar: cart.isNotEmpty
-          ? Padding(
-              padding: const EdgeInsets.all(16.0),
+          ? Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  )
+                ],
+              ),
               child: ElevatedButton(
                 onPressed: checkout,
-                child: const Text('Proceed to Checkout'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[800],
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Checkout',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             )
-          : const SizedBox.shrink(),
+          : null,
     );
   }
 }
 
-class DraggablePlantCard extends StatelessWidget {
+class PlantCard extends StatelessWidget {
   final Map<String, dynamic> plant;
-  final VoidCallback onDismissed;
-  final Function(Map<String, dynamic>) onAddToCart;
+  final VoidCallback onAddToCart;
+  final VoidCallback onRemove;
 
-  const DraggablePlantCard({
+  const PlantCard({
     required this.plant,
-    required this.onDismissed,
     required this.onAddToCart,
+    required this.onRemove,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(plant['name']),
-      direction: DismissDirection.horizontal,
-      onDismissed: (direction) {
-        onDismissed();
-      },
-      background: Container(
-        color: Colors.red,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      secondaryBackground: Container(
-        color: Colors.green,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: const Icon(Icons.done, color: Colors.white),
-      ),
-      child: SizedBox(
-        width: 300,
-        height: 400,
-        child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          elevation: 4,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(plant['image'], height: 200, fit: BoxFit.cover),
-              const SizedBox(height: 10),
-              Text(
-                plant['name'],
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                '\$${plant['price']}',
-                style: const TextStyle(fontSize: 20, color: Colors.green),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Donate functionality
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Donate ${plant['name']}'),
-                          content: const Text('We will plant this tree on your behalf.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Handle donation
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Donate'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: const Text('Donate'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => onAddToCart(plant),
-                    child: const Text('Buy'),
-                  ),
-                ],
-              ),
-            ],
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.asset(
+              plant['image'],
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 150,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.image, size: 50, color: Colors.grey),
+                );
+              },
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  plant['name'],
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '\$${plant['price']}',
+                  style: const TextStyle(fontSize: 18, color: Colors.green),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: onAddToCart,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[800],
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Redeem',
+                          style: TextStyle(color: Colors.white), // White text
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: onRemove,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text('Remove'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-

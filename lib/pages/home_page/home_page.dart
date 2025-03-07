@@ -4,7 +4,6 @@ import 'package:greenreviveapp/pages/user_pages/account_page.dart';
 import 'package:greenreviveapp/pages/user_pages/eco_shop.dart';
 import 'package:greenreviveapp/pages/user_pages/pick_up_screen.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,13 +19,11 @@ class _HomePageState extends State<HomePage> {
     EcoShopScreen(),
     PickUpScreen(),
     AccountScreen(),
-
-    
   ];
 
   void _onTabSelected(int index) {
     setState(() {
-      _selectedIndex = index; // Update the selected index
+      _selectedIndex = index;
     });
   }
 
@@ -34,42 +31,47 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text(
+          'Green Revive',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Colors.green[800],
         leading: IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.notifications),
+          icon: const Icon(Icons.notifications, color: Colors.white),
         ),
-        
-        actions: <Widget>[
+        actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.menu),
+            icon: const Icon(Icons.menu, color: Colors.white),
           ),
         ],
       ),
-      body: _widgetOptions[_selectedIndex], // Use the correct list for body
+      body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.green[800],
+        unselectedItemColor: Colors.grey,
+        onTap: _onTabSelected,
+        type: BottomNavigationBarType.fixed,
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.eco),
-            label: 'roots for change',
+            label: 'Eco Shop',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.delivery_dining),
-            label: 'Schedule pickup',
+            label: 'Pickup',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'User',
+            label: 'Profile',
           ),
         ],
-        currentIndex: _selectedIndex, // Current active tab
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        onTap: _onTabSelected, // Update the index when a tab is tapped
       ),
     );
   }
@@ -80,74 +82,102 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Your Contribution to a Greener Environment',
+            'Your Green Impact',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: PieChart(
-              PieChartData(
-                sections: showingSections(),
-                borderData: FlBorderData(show: true),
-                centerSpaceRadius: 49,
+          const SizedBox(height: 16),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  const Text(
+                    'Weekly Contribution',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 200,
+                    child: PieChart(
+                      PieChartData(
+                        sections: showingSections(),
+                        borderData: FlBorderData(show: false),
+                        centerSpaceRadius: 40,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           const Text(
-            'Weekly Contribution in kWh',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            'Energy Saved (kWh)',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: LineChart(
-              LineChartData(
-                gridData: const FlGridData(show: false),
-                titlesData: const FlTitlesData(
-                  leftTitles: AxisTitles(),
-                  bottomTitles: AxisTitles()
-                ),
-                borderData: FlBorderData(show: true),
-                minX: 0,
-                maxX: 6,
-                minY: 0,
-                maxY: 10,
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: [
-                      const FlSpot(0, 2),
-                      const FlSpot(1, 3),
-                      const FlSpot(2, 5),
-                      const FlSpot(3, 6),
-                      const FlSpot(4, 8),
-                      const FlSpot(5, 9),
-                      const FlSpot(6, 10),
+          const SizedBox(height: 16),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: 200,
+                child: LineChart(
+                  LineChartData(
+                    gridData: const FlGridData(show: false),
+                    titlesData: const FlTitlesData(show: false),
+                    borderData: FlBorderData(show: false),
+                    minX: 0,
+                    maxX: 6,
+                    minY: 0,
+                    maxY: 10,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: const [
+                          FlSpot(0, 2),
+                          FlSpot(1, 3),
+                          FlSpot(2, 5),
+                          FlSpot(3, 6),
+                          FlSpot(4, 8),
+                          FlSpot(5, 9),
+                          FlSpot(6, 10),
+                        ],
+                        isCurved: true,
+                        color: Colors.green[800],
+                        barWidth: 3,
+                        belowBarData: BarAreaData(
+                          show: true,
+                          color: Colors.green[800]!.withOpacity(0.2),
+                        ),
+                      ),
                     ],
-                    isCurved: true,
-                   
-                    dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(show: false),
                   ),
-                ],
+                ),
               ),
             ),
           ),
         ],
       ),
     );
-  }}
+  }
+}
 
- List<PieChartSectionData> showingSections() {
+List<PieChartSectionData> showingSections() {
   return List.generate(4, (i) {
-    final isTouched = i == 0;
-    final fontSize = isTouched ? 25.0 : 16.0;
-    final radius = isTouched ? 60.0 : 50.0;
+    const radius = 50.0;
     switch (i) {
       case 0:
         return PieChartSectionData(
@@ -155,8 +185,8 @@ class Dashboard extends StatelessWidget {
           value: 40,
           title: '40%',
           radius: radius,
-          titleStyle: TextStyle(
-            fontSize: fontSize,
+          titleStyle: const TextStyle(
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -167,8 +197,8 @@ class Dashboard extends StatelessWidget {
           value: 30,
           title: '30%',
           radius: radius,
-          titleStyle: TextStyle(
-            fontSize: fontSize,
+          titleStyle: const TextStyle(
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -179,8 +209,8 @@ class Dashboard extends StatelessWidget {
           value: 15,
           title: '15%',
           radius: radius,
-          titleStyle: TextStyle(
-            fontSize: fontSize,
+          titleStyle: const TextStyle(
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -191,8 +221,8 @@ class Dashboard extends StatelessWidget {
           value: 15,
           title: '15%',
           radius: radius,
-          titleStyle: TextStyle(
-            fontSize: fontSize,
+          titleStyle: const TextStyle(
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -201,4 +231,4 @@ class Dashboard extends StatelessWidget {
         throw Error();
     }
   });
- }
+}

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:greenreviveapp/pages/auth_pages/login_page.dart';
-
 import 'package:greenreviveapp/pages/home_page/home_page.dart';
+import 'package:greenreviveapp/pages/home_page/splash_page.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home:const AuthWrapper(),
+      home:const Splashscreen(),
       debugShowCheckedModeBanner: false,
     );
   }

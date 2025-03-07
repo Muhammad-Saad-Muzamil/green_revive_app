@@ -3,18 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenreviveapp/pages/auth_pages/login_page.dart';
 
 class AccountScreen extends StatelessWidget {
-  const AccountScreen({Key? key}) : super(key: key);
+  const AccountScreen({super.key});
 
   Future<void> _logOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      // Navigate to the login screen after logging out
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()), // Replace with your actual login screen widget
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     } catch (e) {
-      // Handle errors, e.g., show a snack bar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging out: ${e.toString()}')),
       );
@@ -23,31 +21,64 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    String userName = user?.displayName ?? user?.email?.split('@')[0] ?? 'User';
+    
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Account Settings'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        // title: Text(
+        //   userName,
+        //   style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: Colors.blue),
+        // ),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Account Settings',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Here you can manage your account settings, privacy options, and more.',
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.grey.shade100,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.person, size: 80, color: Colors.black54),
+                  const SizedBox(height: 10),
+                  Text(
+                    userName,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Manage your settings, privacy & more.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
             const Spacer(),
-            Center(
+            SizedBox(
+              width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => _logOut(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  backgroundColor: Colors.redAccent,
                 ),
-                child: const Text('Log Out'),
+                child: const Text(
+                  'Log Out',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
               ),
             ),
           ],
